@@ -682,6 +682,7 @@ def process(
             slug = slugify(
                 post["title"], max_length=slug_max_length, word_boundary=True
             )
+
             if isinstance(post["date"], str):
                 # NOTE if you get weird results in 2022+ importing from papercall,
                 # switch this to date = maya.when(post["date"]).datetime(
@@ -690,7 +691,11 @@ def process(
                 date = parse(post["date"]).astimezone(CONFERENCE_TZ)
             else:
                 date = post["date"].astimezone(CONFERENCE_TZ)
-
+            
+            if slug == 'lightning-talks':
+                # need different slugs for each day
+                slug = f'lightning-talks-{date:%A}'.casefold()
+            
             category = post.get("category")
 
             # TODO: Double check this...
